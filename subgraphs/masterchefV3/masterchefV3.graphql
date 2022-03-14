@@ -13,10 +13,10 @@ type MasterChef @entity {
   masterPid: Int!
 
   # Joe
-  joe: Bytes!
+  volt: Bytes!
 
-  # Joe per sec
-  joePerSec: BigInt!
+  # Volt per sec
+  voltPerSec: BigInt!
 
   # Total allocation point
   totalAllocPoint: BigInt!
@@ -27,20 +27,20 @@ type MasterChef @entity {
   # Pool count
   poolCount: BigInt!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # History
   history: [History!]! @derivedFrom(field: "owner")
@@ -56,20 +56,20 @@ type History @entity {
   # Owner (MasterChef, Pool, or User).
   owner: MasterChef!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # Timestamp
   timestamp: BigInt!
@@ -99,9 +99,9 @@ type Pool @entity {
   lastRewardTimestamp: BigInt!
 
   # Accumulated joe per share
-  accJoePerShare: BigInt!
+  accVoltPerShare: BigInt!
 
-  # JLP token balance
+  # FLP token balance
   balance: BigInt!
 
   # Pool users
@@ -110,20 +110,20 @@ type Pool @entity {
   # User count
   userCount: BigInt!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # Timestamp
   timestamp: BigInt!
@@ -140,11 +140,11 @@ type Pool @entity {
   # Exit USD
   exitUSD: BigDecimal!
 
-  # Joe harvested
-  joeHarvested: BigDecimal!
+  # Volt harvested
+  voltHarvested: BigDecimal!
 
-  # Joe harvested
-  joeHarvestedUSD: BigDecimal!
+  # Volt harvested
+  voltHarvestedUSD: BigDecimal!
 }
 
 type Rewarder @entity {
@@ -169,20 +169,20 @@ type PoolHistory @entity {
   # Pool
   pool: Pool!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # User Count
   userCount: BigInt!
@@ -199,11 +199,11 @@ type PoolHistory @entity {
   # Exit USD
   exitUSD: BigDecimal!
 
-  # Joe harvested
-  joeHarvested: BigDecimal!
+  # Volt harvested
+  voltHarvested: BigDecimal!
 
-  # Joe harvested
-  joeHarvestedUSD: BigDecimal!
+  # Volt harvested
+  voltHarvestedUSD: BigDecimal!
 }
 
 type User @entity {
@@ -237,11 +237,11 @@ type User @entity {
   # Exit USD
   exitUSD: BigDecimal!
 
-  # Joe harvested
-  joeHarvested: BigDecimal!
+  # Volt harvested
+  voltHarvested: BigDecimal!
 
-  # Joe harvested
-  joeHarvestedUSD: BigDecimal!
+  # Volt harvested
+  voltHarvestedUSD: BigDecimal!
 
   # Timestamp
   timestamp: BigInt!

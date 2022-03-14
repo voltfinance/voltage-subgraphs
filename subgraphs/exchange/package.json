@@ -11,17 +11,21 @@
 	    "prepare:avax": "mustache config/avax.json exchange.template.yaml > exchange.avax.yaml",
         "prepare:rinkeby": "mustache config/rinkeby.json exchange.template.yaml > exchange.rinkeby.yaml",
         "prepare:fuji": "mustache config/fuji.json exchange.template.yaml > exchange.fuji.yaml",
+        "prepare:fuse": "mustache config/fuse.json exchange.template.yaml > exchange.fuse.yaml",
 
         "codegen:avax": "graph codegen exchange.avax.yaml",
         "codegen:rinkeby": "graph codegen exchange.rinkeby.yaml",
         "codegen:fuji": "graph codegen exchange.fuji.yaml",
+        "codegen:fuse": "graph codegen exchange.fuse.yaml",
 
         "build:avax": "graph build exchange.avax.yaml",
         "build:rinkeby": "graph build exchange.rinkeby.yaml",
         "build:fuji": "graph build exchange.fuji.yaml",
+        "build:fuse": "graph build exchange.fuse.yaml",
 
         "deploy:avax": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ traderjoe-xyz/exchange exchange.avax.yaml",
         "deploy:rinkeby": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ traderjoe-xyz/exchange-rinkeby-ii exchange.rinkeby.yaml",
+        "deploy:fuse": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ voltfinance/voltage-exchange exchange.fuse.yaml",
 
         "create-local": "graph create --node http://localhost:8020/ traderjoe-xyz/exchange",
         "remove-local": "graph remove --node http://localhost:8020/ traderjoe-xyz/exchange",

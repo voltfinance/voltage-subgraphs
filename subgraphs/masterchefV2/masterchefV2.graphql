@@ -18,11 +18,11 @@ type MasterChef @entity {
   # Start timestamp
   startTimestamp: BigInt!
 
-  # Joe
-  joe: Bytes!
+  # Volt
+  volt: Bytes!
 
-  # Joe per sec
-  joePerSec: BigInt!
+  # Volt per sec
+  voltPerSec: BigInt!
 
   # Total allocation point
   totalAllocPoint: BigInt!
@@ -33,20 +33,20 @@ type MasterChef @entity {
   # Pool count
   poolCount: BigInt!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # History
   history: [History!]! @derivedFrom(field: "owner")
@@ -62,20 +62,20 @@ type History @entity {
   # Owner (MasterChef, Pool, or User).
   owner: MasterChef!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # Timestamp
   timestamp: BigInt!
@@ -104,10 +104,10 @@ type Pool @entity {
   # Last reward block
   lastRewardTimestamp: BigInt!
 
-  # Accumulated joe per share
-  accJoePerShare: BigInt!
+  # Accumulated volt per share
+  accVoltPerShare: BigInt!
 
-  # JLP token balance
+  # FLP token balance
   balance: BigInt!
 
   # Pool users
@@ -116,20 +116,20 @@ type Pool @entity {
   # User count
   userCount: BigInt!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # Timestamp
   timestamp: BigInt!
@@ -146,11 +146,11 @@ type Pool @entity {
   # Exit USD
   exitUSD: BigDecimal!
 
-  # Joe harvested
-  joeHarvested: BigDecimal!
+  # Volt harvested
+  voltHarvested: BigDecimal!
 
-  # Joe harvested
-  joeHarvestedUSD: BigDecimal!
+  # Volt harvested
+  voltHarvestedUSD: BigDecimal!
 }
 
 type Rewarder @entity {
@@ -175,20 +175,20 @@ type PoolHistory @entity {
   # Pool
   pool: Pool!
 
-  # JLP Balance
-  jlpBalance: BigDecimal!
+  # FLP Balance
+  flpBalance: BigDecimal!
 
-  # JLP Age
-  jlpAge: BigDecimal!
+  # FLP Age
+  flpAge: BigDecimal!
 
-  # JLP Removed
-  jlpAgeRemoved: BigDecimal!
+  # FLP Removed
+  flpAgeRemoved: BigDecimal!
 
-  # JLP Deposited
-  jlpDeposited: BigDecimal!
+  # FLP Deposited
+  flpDeposited: BigDecimal!
 
-  # JLP Withdrawn
-  jlpWithdrawn: BigDecimal!
+  # FLP Withdrawn
+  flpWithdrawn: BigDecimal!
 
   # User Count
   userCount: BigInt!
@@ -205,11 +205,11 @@ type PoolHistory @entity {
   # Exit USD
   exitUSD: BigDecimal!
 
-  # Joe harvested
-  joeHarvested: BigDecimal!
+  # Volt harvested
+  voltHarvested: BigDecimal!
 
-  # Joe harvested
-  joeHarvestedUSD: BigDecimal!
+  # Volt harvested
+  voltHarvestedUSD: BigDecimal!
 }
 
 type User @entity {
@@ -222,11 +222,11 @@ type User @entity {
   # Related pool
   pool: Pool
 
-  # We do some fancy math here. Basically, any point in time, the amount of JOEs
+  # We do some fancy math here. Basically, any point in time, the amount of VOLTs
   # entitled to a user but is pending to be distributed is:
-  # pending reward = (user.amount * pool.accJoePerShare) - user.rewardDebt
+  # pending reward = (user.amount * pool.accVoltPerShare) - user.rewardDebt
   # Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
-  # 1. The pool's `accJoePerShare` (and `lastRewardTimestamp`) gets updated.
+  # 1. The pool's `accVoltPerShare` (and `lastRewardTimestamp`) gets updated.
   # 2. User receives the pending reward sent to his/her address.
   # 3. User's `amount` gets updated.
   # 4. User's `rewardDebt` gets updated.
@@ -243,11 +243,11 @@ type User @entity {
   # Exit USD
   exitUSD: BigDecimal!
 
-  # Joe harvested
-  joeHarvested: BigDecimal!
+  # Volt harvested
+  voltHarvested: BigDecimal!
 
-  # Joe harvested
-  joeHarvestedUSD: BigDecimal!
+  # Volt harvested
+  voltHarvestedUSD: BigDecimal!
 
   # Timestamp
   timestamp: BigInt!

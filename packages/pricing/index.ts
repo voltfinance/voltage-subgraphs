@@ -6,12 +6,12 @@ import {
   BIG_DECIMAL_ZERO,
   BIG_INT_ZERO,
   FACTORY_ADDRESS,
-  JOE_TOKEN_ADDRESS,
-  JOE_USDT_PAIR_ADDRESS,
-  TRADERJOE_START_BLOCK,
-  TRADERJOE_WAVAX_USDT_PAIR_ADDRESS,
+  VOLT_TOKEN_ADDRESS,
+  VOLT_USDC_PAIR_ADDRESS,
+  VOLTAGE_START_BLOCK,
+  VOLTAGE_WFUSE_USDC_PAIR_ADDRESS,
   USDT_ADDRESS,
-  WAVAX_ADDRESS,
+  WFUSE_ADDRESS,
 } from 'const'
 import { Address, BigDecimal, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 
@@ -27,13 +27,13 @@ export function getUSDRate(token: Address, block: ethereum.Block): BigDecimal {
   //    let address = block.number.le(BigInt.fromI32(10829344))
   //      ? UNISWAP_WETH_USDT_PAIR_ADDRESS
   //      : SUSHISWAP_WETH_USDT_PAIR_ADDRESS
-  if (block.number.le(TRADERJOE_START_BLOCK)) {
+  if (block.number.le(VOLTAGE_START_BLOCK)) {
     return BIG_DECIMAL_ZERO
   }
 
-  let address = TRADERJOE_WAVAX_USDT_PAIR_ADDRESS
+  let address = VOLTAGE_WFUSE_USDC_PAIR_ADDRESS
 
-  const tokenPriceAVAX = getAvaxRate(token, block)
+  const tokenPriceWFUSE = getFuseRate(token, block)
 
   const pair = PairContract.bind(address)
 
@@ -50,22 +50,22 @@ export function getUSDRate(token: Address, block: ethereum.Block): BigDecimal {
 
   const avaxPriceUSD = reserve1.div(reserve0).div(BIG_DECIMAL_1E6).times(BIG_DECIMAL_1E18)
 
-  return avaxPriceUSD.times(tokenPriceAVAX)
+  return avaxPriceUSD.times(tokenPriceWFUSE)
 }
 
-export function getAvaxRate(token: Address, block: ethereum.Block): BigDecimal {
-  if (token == WAVAX_ADDRESS) {
+export function getFuseRate(token: Address, block: ethereum.Block): BigDecimal {
+  if (token == WFUSE_ADDRESS) {
     return BIG_DECIMAL_ONE
   }
 
   // TODO: add fallback, e.g. pangolin
   //    block.number.le(BigInt.fromI32(10829344)) ? UNISWAP_FACTORY_ADDRESS : FACTORY_ADDRESS
-  if (block.number.le(TRADERJOE_START_BLOCK)) {
+  if (block.number.le(VOLTAGE_START_BLOCK)) {
     return BIG_DECIMAL_ZERO
   }
   const factory = FactoryContract.bind(FACTORY_ADDRESS)
 
-  const address = factory.getPair(token, WAVAX_ADDRESS)
+  const address = factory.getPair(token, WFUSE_ADDRESS)
 
   if (address == ADDRESS_ZERO) {
     log.info('Address ZERO...', [])
@@ -76,7 +76,7 @@ export function getAvaxRate(token: Address, block: ethereum.Block): BigDecimal {
 
   const reservesResult = pair.try_getReserves()
   if (reservesResult.reverted) {
-    log.info('[getAvaxRate] getReserves reverted', [])
+    log.info('[getFuseRate] getReserves reverted', [])
     return BIG_DECIMAL_ZERO
   }
   const reserves = reservesResult.value
@@ -86,19 +86,19 @@ export function getAvaxRate(token: Address, block: ethereum.Block): BigDecimal {
     return BIG_DECIMAL_ZERO
   }
 
-  let avax =
-    pair.token0() == WAVAX_ADDRESS
+  let fuse =
+    pair.token0() == WFUSE_ADDRESS
       ? reserves.value0.toBigDecimal().times(BIG_DECIMAL_1E18).div(reserves.value1.toBigDecimal())
       : reserves.value1.toBigDecimal().times(BIG_DECIMAL_1E18).div(reserves.value0.toBigDecimal())
 
-  return avax.div(BIG_DECIMAL_1E18)
+  return fuse.div(BIG_DECIMAL_1E18)
 }
 
-// NOTE: currently using pricing via JOE/USDT while exchange subgraph is based on JOE/AVAX
-// this results in some small discrepancy in JOE price, and therefore joeHarvestedUSD
+// NOTE: currently using pricing via VOLT/USDT while exchange subgraph is based on JOE/AVAX
+// this results in some small discrepancy in VOLT price, and therefore joeHarvestedUSD
 // we live with this data point has no impact to front end experience, only analytics
-export function getJoePrice(block: ethereum.Block): BigDecimal {
-  if (block.number.lt(TRADERJOE_START_BLOCK)) {
+export function getVoltPrice(block: ethereum.Block): BigDecimal {
+  if (block.number.lt(VOLTAGE_START_BLOCK)) {
     return BIG_DECIMAL_ZERO
   }
   // TODO: fallback on token price
@@ -110,16 +110,16 @@ export function getJoePrice(block: ethereum.Block): BigDecimal {
   //    if (block.number.le(SOME_BLOCK)) {
   //        pair = PairContract.bind(SOME_ADDRESS)
   //    }
-  const pair = PairContract.bind(JOE_USDT_PAIR_ADDRESS)
+  const pair = PairContract.bind(VOLT_USDC_PAIR_ADDRESS)
 
   const reservesResult = pair.try_getReserves()
   if (reservesResult.reverted) {
-    log.info('[getJoePrice] getReserves reverted', [])
+    log.info('[getVoltPrice] getReserves reverted', [])
     return BIG_DECIMAL_ZERO
   }
   const reserves = reservesResult.value
   if (reserves.value0.toBigDecimal().equals(BigDecimal.fromString('0'))) {
-    log.error('[getJoePrice] USDT reserve 0', [])
+    log.error('[getVoltPrice] USDT reserve 0', [])
     return BIG_DECIMAL_ZERO
   }
   return reserves.value1.toBigDecimal().times(BIG_DECIMAL_1E18).div(reserves.value0.toBigDecimal()).div(BIG_DECIMAL_1E6)

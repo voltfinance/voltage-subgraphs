@@ -5,11 +5,11 @@ import {
   FACTORY_ADDRESS,
   WHITELIST,
   JOE_USDT_PAIR_ADDRESS,
-  WAVAX_STABLE_PAIRS,
-  WAVAX_ADDRESS,
+  WFUSE_STABLE_PAIRS,
+  WFUSE_ADDRESS,
   USDT_ADDRESS,
-  JOE_TOKEN_ADDRESS,
-  TRADERJOE_START_BLOCK,
+  VOLT_TOKEN_ADDRESS,
+  VOLTAGE_START_BLOCK,
 } from 'const'
 import { Address, BigDecimal, ethereum, log } from '@graphprotocol/graph-ts'
 import { Pair, Token } from '../../generated/schema'
@@ -23,7 +23,7 @@ export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)
  * WAvg price would be better, but JOE/AVAX is bulk of liquidity. 
  */
 export function getJoePrice(block: ethereum.Block = null): BigDecimal {
-  const avax_rate = getAvaxRate(JOE_TOKEN_ADDRESS)
+  const avax_rate = getAvaxRate(VOLT_TOKEN_ADDRESS)
   const avax_price = getAvaxPrice()
   const price = avax_rate.times(avax_price)
   return price
@@ -37,26 +37,26 @@ export function getWavgJoePrice(block: ethereum.Block = null): BigDecimal {
   // get JOE/USDT
   const usdt_pair = Pair.load(JOE_USDT_PAIR_ADDRESS.toString())
   const usdt_price = usdt_pair
-    ? usdt_pair.token0 == JOE_TOKEN_ADDRESS.toHexString()
+    ? usdt_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
       ? usdt_pair.token1Price
       : usdt_pair.token0Price
     : BIG_DECIMAL_ZERO
   const usdt_weight = usdt_pair
-    ? usdt_pair.token0 == JOE_TOKEN_ADDRESS.toHexString()
+    ? usdt_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
       ? usdt_pair.reserve0
       : usdt_pair.reserve1
     : BIG_DECIMAL_ZERO
 
   // get JOE/AVAX
-  const joe_wavax_address = factoryContract.getPair(JOE_TOKEN_ADDRESS, WAVAX_ADDRESS)
+  const joe_wavax_address = factoryContract.getPair(VOLT_TOKEN_ADDRESS, WFUSE_ADDRESS)
   const avax_pair = Pair.load(joe_wavax_address.toString())
   const avax_rate = avax_pair
-    ? avax_pair.token0 == JOE_TOKEN_ADDRESS.toHexString()
+    ? avax_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
       ? avax_pair.token1Price
       : avax_pair.token0Price
     : BIG_DECIMAL_ZERO
   const avax_weight = avax_pair
-    ? avax_pair.token0 == JOE_TOKEN_ADDRESS.toHexString()
+    ? avax_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
       ? avax_pair.reserve0
       : avax_pair.reserve1
     : BIG_DECIMAL_ZERO
@@ -83,8 +83,8 @@ export function getAvaxPrice(block: ethereum.Block = null): BigDecimal {
   let total_weight = BIG_DECIMAL_ZERO
   let sum_price = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < WAVAX_STABLE_PAIRS.length; ++i) {
-    const pair_address = WAVAX_STABLE_PAIRS[i]
+  for (let i = 0; i < WFUSE_STABLE_PAIRS.length; ++i) {
+    const pair_address = WFUSE_STABLE_PAIRS[i]
     const pair = Pair.load(pair_address)
     const price = _getAvaxPrice(pair)
     const weight = _getAvaxReserve(pair)
@@ -104,7 +104,7 @@ function _getAvaxPrice(pair: Pair | null): BigDecimal {
   if (pair == null) {
     return BIG_DECIMAL_ZERO
   }
-  const avax = pair.token0 == WAVAX_ADDRESS.toHexString() ? pair.token1Price : pair.token0Price
+  const avax = pair.token0 == WFUSE_ADDRESS.toHexString() ? pair.token1Price : pair.token0Price
   return avax
 }
 
@@ -113,7 +113,7 @@ function _getAvaxReserve(pair: Pair | null): BigDecimal {
   if (pair == null) {
     return BIG_DECIMAL_ZERO
   }
-  const avax = pair.token0 == WAVAX_ADDRESS.toHexString() ? pair.reserve0 : pair.reserve1
+  const avax = pair.token0 == WFUSE_ADDRESS.toHexString() ? pair.reserve0 : pair.reserve1
   return avax
 }
 
@@ -122,7 +122,7 @@ function _getAvaxReserve(pair: Pair | null): BigDecimal {
  * Loop through WHITELIST to get Avax/Token rate.
  */
 export function getAvaxRate(address: Address): BigDecimal {
-  if (address == WAVAX_ADDRESS) {
+  if (address == WFUSE_ADDRESS) {
     return BIG_DECIMAL_ONE
   }
   // TODO: This is slow, and this function is called quite often.
@@ -135,11 +135,11 @@ export function getAvaxRate(address: Address): BigDecimal {
       const pair = Pair.load(pairAddress.toHex())
       if (pair.token0 == address.toHexString()) {
         const token1 = Token.load(pair.token1)
-        return pair.token1Price.times(token1.derivedAVAX as BigDecimal) // return token1 per our token * AVAX per token 1
+        return pair.token1Price.times(token1.derivedETH as BigDecimal) // return token1 per our token * AVAX per token 1
       }
       if (pair.token1 == address.toHexString()) {
         const token0 = Token.load(pair.token0)
-        return pair.token0Price.times(token0.derivedAVAX as BigDecimal) // return token0 per our token * AVAX per token 0
+        return pair.token0Price.times(token0.derivedETH as BigDecimal) // return token0 per our token * AVAX per token 0
       }
     }
   }

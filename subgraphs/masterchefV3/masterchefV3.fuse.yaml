@@ -1,0 +1,49 @@
+specVersion: 0.0.3
+description: Masterchef
+repository: https://github.com/traderjoe-xyz/joe-subgraphs
+schema:
+  file: ./masterchefV3.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MasterChefVoltV3
+    network: fuse
+    source:
+      address: '0xE3e184a7b75D0Ae6E17B58F5283b91B4E0A2604F'
+      abi: MasterChefVoltV3
+      startBlock: 15887393
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - MasterChef
+        - History
+        - Pool
+        - PoolHistory
+        - User
+        - Rewarder
+      abis:
+        - name: MasterChefVoltV3
+          file: ../../packages/abis/MasterChefVoltV3.json
+        - name: Factory
+          file: ../../packages/abis/UniswapV2Factory.json
+        - name: Pair
+          file: ../../packages/abis/UniswapV2Pair.json
+        - name: ERC20
+          file: ../../packages/abis/ERC20.json
+        - name: Rewarder
+          file: ../../packages/abis/SimpleRewarderPerSec.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256)
+          handler: deposit
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256)
+          handler: emergencyWithdraw
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: ownershipTransferred
+        - event: Withdraw(indexed address,indexed uint256,uint256)
+          handler: withdraw
+        - event: Add(indexed uint256,uint256,indexed address,indexed address)
+          handler: add
+        - event: Set(indexed uint256,uint256,indexed address,bool)
+          handler: set
+      file: ./src/masterchefV3.ts

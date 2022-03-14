@@ -1,0 +1,51 @@
+specVersion: 0.0.3
+description: Masterchef
+repository: https://github.com/mul53/fusefi-subgraphs
+schema:
+  file: ./masterchefV2.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MasterChefVoltV2
+    network: fuse
+    source:
+      address: '0xc71E27C7e128d9CAEb2b8cA756647f7F199cF39e'
+      abi: MasterChefVoltV2
+      startBlock: 15887352
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - MasterChef
+        - History
+        - Pool
+        - PoolHistory
+        - User
+        - Rewarder
+      abis:
+        - name: MasterChefVoltV2
+          file: ./abi/MasterChefVoltV2.json
+        - name: Factory
+          file: ./abi/UniswapV2Factory.json
+        - name: Pair
+          file: ./abi/UniswapV2Pair.json
+        - name: ERC20
+          file: ./abi/ERC20.json
+        - name: Rewarder
+          file: ./abi/SimpleRewarderPerSec.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256)
+          handler: deposit
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256)
+          handler: emergencyWithdraw
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: ownershipTransferred
+        - event: Withdraw(indexed address,indexed uint256,uint256)
+          handler: withdraw
+        - event: Add(indexed uint256,uint256,indexed address,indexed address)
+          handler: add
+        - event: Set(indexed uint256,uint256,indexed address,bool)
+          handler: set
+        - event: UpdateEmissionRate(indexed address,uint256)
+          handler: updateEmissionRate
+      file: ./src/masterchefV2.ts

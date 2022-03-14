@@ -29,7 +29,7 @@ export function getToken(address: Address): Token | null {
     }
 
     token.decimals = decimals
-    token.derivedAVAX = BIG_DECIMAL_ZERO
+    token.derivedETH = BIG_DECIMAL_ZERO
     token.volume = BIG_DECIMAL_ZERO
     token.volumeUSD = BIG_DECIMAL_ZERO
     token.untrackedVolumeUSD = BIG_DECIMAL_ZERO
