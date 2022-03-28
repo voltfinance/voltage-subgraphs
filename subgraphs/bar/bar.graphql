@@ -9,44 +9,44 @@ type Bar @entity {
   # Name
   name: String!
 
-  # Joe token
-  joe: Bytes!
+  # Volt token
+  volt: Bytes!
 
   # Symbol
   symbol: String!
 
-  # Total xJoe supply
+  # Total xVolt supply
   totalSupply: BigDecimal!
 
-  # Ratio xJoe per Joe
+  # Ratio xVolt per Volt
   ratio: BigDecimal!
 
-  # xJoe minted
-  xJoeMinted: BigDecimal!
+  # xVolt minted
+  xVoltMinted: BigDecimal!
 
-  # xJoe burned
-  xJoeBurned: BigDecimal!
+  # xVolt burned
+  xVoltBurned: BigDecimal!
 
-  # Joe staked
-  joeStaked: BigDecimal!
+  # Volt staked
+  voltStaked: BigDecimal!
 
-  # Joe staked USD
-  joeStakedUSD: BigDecimal!
+  # Volt staked USD
+  voltStakedUSD: BigDecimal!
 
-  # Joe harvested
-  joeHarvested: BigDecimal!
+  # Volt harvested
+  voltHarvested: BigDecimal!
 
-  # Joe harvested USD
-  joeHarvestedUSD: BigDecimal!
+  # Volt harvested USD
+  voltHarvestedUSD: BigDecimal!
 
-  # xJoe age
-  xJoeAge: BigDecimal!
+  # xVolt age
+  xVoltAge: BigDecimal!
 
-  # xJoe age destroyed
-  xJoeAgeDestroyed: BigDecimal!
+  # xVolt age destroyed
+  xVoltAgeDestroyed: BigDecimal!
 
   # Users in the bar
-  users: [User!]! @derivedFrom(field: "bar")
+  users: [User!]! @derivedFrom(field: "volt")
 
   # Updated at
   updatedAt: BigInt!
@@ -58,51 +58,51 @@ type User @entity {
   id: ID!
 
   # Bar
-  bar: Bar
+  volt: Bar
 
-  # xJoe (balance)
-  xJoe: BigDecimal!
+  # xVolt (balance)
+  xVolt: BigDecimal!
 
-  # xJoe In
-  xJoeIn: BigDecimal!
+  # xVolt In
+  xVoltIn: BigDecimal!
 
-  # xJoe Out
-  xJoeOut: BigDecimal!
+  # xVolt Out
+  xVoltOut: BigDecimal!
 
   # Minted
-  xJoeMinted: BigDecimal!
+  xVoltMinted: BigDecimal!
 
   # Burned
-  xJoeBurned: BigDecimal!
+  xVoltBurned: BigDecimal!
 
-  # xJoe offset
-  xJoeOffset: BigDecimal!
+  # xVolt offset
+  xVoltOffset: BigDecimal!
 
-  # xJoe age
-  xJoeAge: BigDecimal!
+  # xVolt age
+  xVoltAge: BigDecimal!
 
-  # xJoe age destroyed
-  xJoeAgeDestroyed: BigDecimal!
+  # xVolt age destroyed
+  xVoltAgeDestroyed: BigDecimal!
 
   # Staked
-  joeStaked: BigDecimal!
+  voltStaked: BigDecimal!
 
   # Sum of $ at time of staking
-  joeStakedUSD: BigDecimal!
+  voltStakedUSD: BigDecimal!
 
   # Harvested
-  joeHarvested: BigDecimal!
+  voltHarvested: BigDecimal!
 
   # Sum of $ at time of harvesting
-  joeHarvestedUSD: BigDecimal!
+  voltHarvestedUSD: BigDecimal!
 
-  # To get bar pending joe (xJoe * staked / bar.totalSupply)
+  # To get bar pending volt (xVolt * staked / bar.totalSupply)
 
-  # Joe Out
-  joeOut: BigDecimal!
+  # Volt Out
+  voltOut: BigDecimal!
 
-  # Joe In
-  joeIn: BigDecimal!
+  # Volt In
+  voltIn: BigDecimal!
 
   # USD Out
   usdOut: BigDecimal!
@@ -113,8 +113,8 @@ type User @entity {
   # Updated at
   updatedAt: BigInt!
 
-  # joe offset
-  joeOffset: BigDecimal!
+  # volt offset
+  voltOffset: BigDecimal!
 
   # usd offset
   usdOffset: BigDecimal!
@@ -129,14 +129,14 @@ type History @entity {
   id: ID!
   date: Int!
   timeframe: Timeframe!
-  joeStaked: BigDecimal!
-  joeStakedUSD: BigDecimal!
-  joeHarvested: BigDecimal!
-  joeHarvestedUSD: BigDecimal!
-  xJoeAge: BigDecimal!
-  xJoeAgeDestroyed: BigDecimal!
-  xJoeMinted: BigDecimal!
-  xJoeBurned: BigDecimal!
-  xJoeSupply: BigDecimal!
+  voltStaked: BigDecimal!
+  voltStakedUSD: BigDecimal!
+  voltHarvested: BigDecimal!
+  voltHarvestedUSD: BigDecimal!
+  xVoltAge: BigDecimal!
+  xVoltAgeDestroyed: BigDecimal!
+  xVoltMinted: BigDecimal!
+  xVoltBurned: BigDecimal!
+  xVoltSupply: BigDecimal!
   ratio: BigDecimal!
 }

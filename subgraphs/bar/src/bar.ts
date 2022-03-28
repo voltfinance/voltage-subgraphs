@@ -4,20 +4,19 @@ import {
   BIG_DECIMAL_1E6,
   BIG_DECIMAL_ZERO,
   BIG_INT_ZERO,
-  JOE_BAR_ADDRESS,
-  JOE_TOKEN_ADDRESS,
-  JOE_USDT_PAIR_ADDRESS,
+  VOLT_BAR_ADDRESS,
+  VOLT_TOKEN_ADDRESS,
+  VOLT_USDC_PAIR_ADDRESS,
 } from 'const'
 import { Address, BigDecimal, BigInt, dataSource, ethereum, log } from '@graphprotocol/graph-ts'
 import { Bar, History, User } from '../generated/schema'
 import { Bar as BarContract, Transfer as TransferEvent } from '../generated/JoeBar/Bar'
-
 import { Pair as PairContract } from '../generated/JoeBar/Pair'
 import { JoeToken as JoeTokenContract } from '../generated/JoeBar/JoeToken'
 
 // TODO: Get averages of multiple joe stablecoin pairs
-function getJoePrice(): BigDecimal {
-  const pair = PairContract.bind(JOE_USDT_PAIR_ADDRESS)
+function getVoltPrice(): BigDecimal {
+  const pair = PairContract.bind(VOLT_USDC_PAIR_ADDRESS)
   const reservesResult = pair.try_getReserves()
   if (reservesResult.reverted) {
     log.info('[getJoePrice] getReserves reverted', [])
@@ -25,7 +24,7 @@ function getJoePrice(): BigDecimal {
   }
   const reserves = reservesResult.value
   if (reserves.value0.toBigDecimal().equals(BigDecimal.fromString("0"))) {
-    log.error('[getJoePrice] USDT reserve 0', [])
+    log.error('[getJoePrice] USDC reserve 0', [])
     return BIG_DECIMAL_ZERO
   }
   return reserves.value1.toBigDecimal().times(BIG_DECIMAL_1E18).div(reserves.value0.toBigDecimal()).div(BIG_DECIMAL_1E6)
@@ -36,17 +35,22 @@ function createBar(block: ethereum.Block): Bar {
   const bar = new Bar(dataSource.address().toHex())
   bar.decimals = contract.decimals()
   bar.name = contract.name()
-  bar.joe = contract.joe()
+  const barResult = contract.try_joe();
+  if (barResult.reverted) {
+    bar.volt = VOLT_TOKEN_ADDRESS;
+  } else {
+    bar.volt = barResult.value;
+  }
   bar.symbol = contract.symbol()
   bar.totalSupply = BIG_DECIMAL_ZERO
-  bar.joeStaked = BIG_DECIMAL_ZERO
-  bar.joeStakedUSD = BIG_DECIMAL_ZERO
-  bar.joeHarvested = BIG_DECIMAL_ZERO
-  bar.joeHarvestedUSD = BIG_DECIMAL_ZERO
-  bar.xJoeMinted = BIG_DECIMAL_ZERO
-  bar.xJoeBurned = BIG_DECIMAL_ZERO
-  bar.xJoeAge = BIG_DECIMAL_ZERO
-  bar.xJoeAgeDestroyed = BIG_DECIMAL_ZERO
+  bar.voltStaked = BIG_DECIMAL_ZERO
+  bar.voltStakedUSD = BIG_DECIMAL_ZERO
+  bar.voltHarvested = BIG_DECIMAL_ZERO
+  bar.voltHarvestedUSD = BIG_DECIMAL_ZERO
+  bar.xVoltMinted = BIG_DECIMAL_ZERO
+  bar.xVoltBurned = BIG_DECIMAL_ZERO
+  bar.xVoltAge = BIG_DECIMAL_ZERO
+  bar.xVoltAgeDestroyed = BIG_DECIMAL_ZERO
   bar.ratio = BIG_DECIMAL_ZERO
   bar.updatedAt = block.timestamp
   bar.save()
@@ -68,32 +72,32 @@ function createUser(address: Address, block: ethereum.Block): User {
   const user = new User(address.toHex())
 
   // Set relation to bar
-  user.bar = dataSource.address().toHex()
+  user.volt = dataSource.address().toHex()
 
-  user.xJoe = BIG_DECIMAL_ZERO
-  user.xJoeMinted = BIG_DECIMAL_ZERO
-  user.xJoeBurned = BIG_DECIMAL_ZERO
+  user.xVolt = BIG_DECIMAL_ZERO
+  user.xVoltMinted = BIG_DECIMAL_ZERO
+  user.xVoltBurned = BIG_DECIMAL_ZERO
 
-  user.joeStaked = BIG_DECIMAL_ZERO
-  user.joeStakedUSD = BIG_DECIMAL_ZERO
+  user.voltStaked = BIG_DECIMAL_ZERO
+  user.voltStakedUSD = BIG_DECIMAL_ZERO
 
-  user.joeHarvested = BIG_DECIMAL_ZERO
-  user.joeHarvestedUSD = BIG_DECIMAL_ZERO
+  user.voltHarvested = BIG_DECIMAL_ZERO
+  user.voltHarvestedUSD = BIG_DECIMAL_ZERO
 
   // In/Out
-  user.xJoeOut = BIG_DECIMAL_ZERO
-  user.joeOut = BIG_DECIMAL_ZERO
+  user.xVoltOut = BIG_DECIMAL_ZERO
+  user.voltOut = BIG_DECIMAL_ZERO
   user.usdOut = BIG_DECIMAL_ZERO
 
-  user.xJoeIn = BIG_DECIMAL_ZERO
-  user.joeIn = BIG_DECIMAL_ZERO
+  user.xVoltIn = BIG_DECIMAL_ZERO
+  user.voltIn = BIG_DECIMAL_ZERO
   user.usdIn = BIG_DECIMAL_ZERO
 
-  user.xJoeAge = BIG_DECIMAL_ZERO
-  user.xJoeAgeDestroyed = BIG_DECIMAL_ZERO
+  user.xVoltAge = BIG_DECIMAL_ZERO
+  user.xVoltAgeDestroyed = BIG_DECIMAL_ZERO
 
-  user.xJoeOffset = BIG_DECIMAL_ZERO
-  user.joeOffset = BIG_DECIMAL_ZERO
+  user.xVoltOffset = BIG_DECIMAL_ZERO
+  user.voltOffset = BIG_DECIMAL_ZERO
   user.usdOffset = BIG_DECIMAL_ZERO
   user.updatedAt = block.timestamp
 
@@ -122,15 +126,15 @@ function getHistory(block: ethereum.Block): History {
     history = new History(id)
     history.date = date
     history.timeframe = 'Day'
-    history.joeStaked = BIG_DECIMAL_ZERO
-    history.joeStakedUSD = BIG_DECIMAL_ZERO
-    history.joeHarvested = BIG_DECIMAL_ZERO
-    history.joeHarvestedUSD = BIG_DECIMAL_ZERO
-    history.xJoeAge = BIG_DECIMAL_ZERO
-    history.xJoeAgeDestroyed = BIG_DECIMAL_ZERO
-    history.xJoeMinted = BIG_DECIMAL_ZERO
-    history.xJoeBurned = BIG_DECIMAL_ZERO
-    history.xJoeSupply = BIG_DECIMAL_ZERO
+    history.voltStaked = BIG_DECIMAL_ZERO
+    history.voltStakedUSD = BIG_DECIMAL_ZERO
+    history.voltHarvested = BIG_DECIMAL_ZERO
+    history.voltHarvestedUSD = BIG_DECIMAL_ZERO
+    history.xVoltAge = BIG_DECIMAL_ZERO
+    history.xVoltAgeDestroyed = BIG_DECIMAL_ZERO
+    history.xVoltMinted = BIG_DECIMAL_ZERO
+    history.xVoltBurned = BIG_DECIMAL_ZERO
+    history.xVoltSupply = BIG_DECIMAL_ZERO
     history.ratio = BIG_DECIMAL_ZERO
   }
 
@@ -151,104 +155,104 @@ export function transfer(event: TransferEvent): void {
   }
 
   const bar = getBar(event.block)
-  const barContract = BarContract.bind(JOE_BAR_ADDRESS)
+  const barContract = BarContract.bind(VOLT_BAR_ADDRESS)
 
-  const joePrice = getJoePrice()
+  const voltPrice = getVoltPrice()
 
   bar.totalSupply = barContract.totalSupply().divDecimal(BIG_DECIMAL_1E18)
-  bar.joeStaked = JoeTokenContract.bind(JOE_TOKEN_ADDRESS).balanceOf(JOE_BAR_ADDRESS).divDecimal(BIG_DECIMAL_1E18)
-  bar.ratio = bar.joeStaked.div(bar.totalSupply)
+  bar.voltStaked = JoeTokenContract.bind(VOLT_TOKEN_ADDRESS).balanceOf(VOLT_BAR_ADDRESS).divDecimal(BIG_DECIMAL_1E18)
+  bar.ratio = bar.voltStaked.div(bar.totalSupply)
 
   const what = value.times(bar.ratio)
-  log.debug('joePrice: {}, bar.ratio: {}, what: {}', [joePrice.toString(), bar.ratio.toString(), what.toString()])
+  log.debug('voltPrice: {}, bar.ratio: {}, what: {}', [voltPrice.toString(), bar.ratio.toString(), what.toString()])
 
   // Minted xJoe
   if (event.params.from == ADDRESS_ZERO) {
     const user = getUser(event.params.to, event.block)
 
-    log.info('{} minted {} xJoe in exchange for {} joe - joeStaked before {} joeStaked after {}', [
+    log.info('{} minted {} xVolt in exchange for {} volt - voltStaked before {} voltStaked after {}', [
       event.params.to.toHex(),
       value.toString(),
       what.toString(),
-      user.joeStaked.toString(),
-      user.joeStaked.plus(what).toString(),
+      user.voltStaked.toString(),
+      user.voltStaked.plus(what).toString(),
     ])
 
-    if (user.xJoe == BIG_DECIMAL_ZERO) {
+    if (user.xVolt == BIG_DECIMAL_ZERO) {
       log.info('{} entered the bar', [user.id])
-      user.bar = bar.id
+      user.volt = bar.id
     }
 
-    user.xJoeMinted = user.xJoeMinted.plus(value)
+    user.xVoltMinted = user.xVoltMinted.plus(value)
 
-    const joeStakedUSD = what.times(joePrice)
+    const voltStakedUSD = what.times(voltPrice)
 
-    user.joeStaked = user.joeStaked.plus(what)
-    user.joeStakedUSD = user.joeStakedUSD.plus(joeStakedUSD)
+    user.voltStaked = user.voltStaked.plus(what)
+    user.voltStakedUSD = user.voltStakedUSD.plus(voltStakedUSD)
 
     const days = event.block.timestamp.minus(user.updatedAt).divDecimal(BigDecimal.fromString('86400'))
 
-    const xJoeAge = days.times(user.xJoe)
+    const xVoltAge = days.times(user.xVolt)
 
-    user.xJoeAge = user.xJoeAge.plus(xJoeAge)
+    user.xVoltAge = user.xVoltAge.plus(xVoltAge)
 
     // Update last
-    user.xJoe = user.xJoe.plus(value)
+    user.xVolt = user.xVolt.plus(value)
 
     user.updatedAt = event.block.timestamp
 
     user.save()
 
     const barDays = event.block.timestamp.minus(bar.updatedAt).divDecimal(BigDecimal.fromString('86400'))
-    const barXJoe = bar.xJoeMinted.minus(bar.xJoeBurned)
-    bar.xJoeMinted = bar.xJoeMinted.plus(value)
-    bar.xJoeAge = bar.xJoeAge.plus(barDays.times(barXJoe))
-    bar.joeStaked = bar.joeStaked.plus(what)
-    bar.joeStakedUSD = bar.joeStakedUSD.plus(joeStakedUSD)
+    const barXVolt = bar.xVoltMinted.minus(bar.xVoltBurned)
+    bar.xVoltMinted = bar.xVoltMinted.plus(value)
+    bar.xVoltAge = bar.xVoltAge.plus(barDays.times(barXVolt))
+    bar.voltStaked = bar.voltStaked.plus(what)
+    bar.voltStakedUSD = bar.voltStakedUSD.plus(voltStakedUSD)
     bar.updatedAt = event.block.timestamp
 
     const history = getHistory(event.block)
-    history.xJoeAge = bar.xJoeAge
-    history.xJoeMinted = history.xJoeMinted.plus(value)
-    history.xJoeSupply = bar.totalSupply
-    history.joeStaked = history.joeStaked.plus(what)
-    history.joeStakedUSD = history.joeStakedUSD.plus(joeStakedUSD)
+    history.xVoltAge = bar.xVoltAge
+    history.xVoltMinted = history.xVoltMinted.plus(value)
+    history.xVoltSupply = bar.totalSupply
+    history.voltStaked = history.voltStaked.plus(what)
+    history.voltStakedUSD = history.voltStakedUSD.plus(voltStakedUSD)
     history.ratio = bar.ratio
     history.save()
   }
 
   // Burned xJoe
   if (event.params.to == ADDRESS_ZERO) {
-    log.info('{} burned {} xJoe', [event.params.from.toHex(), value.toString()])
+    log.info('{} burned {} xVolt', [event.params.from.toHex(), value.toString()])
 
     const user = getUser(event.params.from, event.block)
 
-    user.xJoeBurned = user.xJoeBurned.plus(value)
+    user.xVoltBurned = user.xVoltBurned.plus(value)
 
-    user.joeHarvested = user.joeHarvested.plus(what)
+    user.voltHarvested = user.voltHarvested.plus(what)
 
-    const joeHarvestedUSD = what.times(joePrice)
+    const voltHarvestedUSD = what.times(voltPrice)
 
-    user.joeHarvestedUSD = user.joeHarvestedUSD.plus(joeHarvestedUSD)
+    user.voltHarvestedUSD = user.voltHarvestedUSD.plus(voltHarvestedUSD)
 
     const days = event.block.timestamp.minus(user.updatedAt).divDecimal(BigDecimal.fromString('86400'))
 
-    const xJoeAge = days.times(user.xJoe)
+    const xVoltAge = days.times(user.xVolt)
 
-    user.xJoeAge = user.xJoeAge.plus(xJoeAge)
+    user.xVoltAge = user.xVoltAge.plus(xVoltAge)
 
-    const xJoeAgeDestroyed = user.xJoeAge.div(user.xJoe).times(value)
+    const xVoltAgeDestroyed = user.xVoltAge.div(user.xVolt).times(value)
 
-    user.xJoeAgeDestroyed = user.xJoeAgeDestroyed.plus(xJoeAgeDestroyed)
+    user.xVoltAgeDestroyed = user.xVoltAgeDestroyed.plus(xVoltAgeDestroyed)
 
     // remove xJoeAge
-    user.xJoeAge = user.xJoeAge.minus(xJoeAgeDestroyed)
+    user.xVoltAge = user.xVoltAge.minus(xVoltAgeDestroyed)
     // Update xJoe last
-    user.xJoe = user.xJoe.minus(value)
+    user.xVolt = user.xVolt.minus(value)
 
-    if (user.xJoe == BIG_DECIMAL_ZERO) {
+    if (user.xVolt == BIG_DECIMAL_ZERO) {
       log.info('{} left the bar', [user.id])
-      user.bar = null
+      user.volt = null
     }
 
     user.updatedAt = event.block.timestamp
@@ -256,91 +260,91 @@ export function transfer(event: TransferEvent): void {
     user.save()
 
     const barDays = event.block.timestamp.minus(bar.updatedAt).divDecimal(BigDecimal.fromString('86400'))
-    const barXJoe = bar.xJoeMinted.minus(bar.xJoeBurned)
-    bar.xJoeBurned = bar.xJoeBurned.plus(value)
-    bar.xJoeAge = bar.xJoeAge.plus(barDays.times(barXJoe)).minus(xJoeAgeDestroyed)
-    bar.xJoeAgeDestroyed = bar.xJoeAgeDestroyed.plus(xJoeAgeDestroyed)
-    bar.joeHarvested = bar.joeHarvested.plus(what)
-    bar.joeHarvestedUSD = bar.joeHarvestedUSD.plus(joeHarvestedUSD)
+    const barXVolt = bar.xVoltMinted.minus(bar.xVoltBurned)
+    bar.xVoltBurned = bar.xVoltBurned.plus(value)
+    bar.xVoltAge = bar.xVoltAge.plus(barDays.times(barXVolt)).minus(xVoltAgeDestroyed)
+    bar.xVoltAgeDestroyed = bar.xVoltAgeDestroyed.plus(xVoltAgeDestroyed)
+    bar.voltHarvested = bar.voltHarvested.plus(what)
+    bar.voltHarvestedUSD = bar.voltHarvestedUSD.plus(voltHarvestedUSD)
     bar.updatedAt = event.block.timestamp
 
     const history = getHistory(event.block)
-    history.xJoeSupply = bar.totalSupply
-    history.xJoeBurned = history.xJoeBurned.plus(value)
-    history.xJoeAge = bar.xJoeAge
-    history.xJoeAgeDestroyed = history.xJoeAgeDestroyed.plus(xJoeAgeDestroyed)
-    history.joeHarvested = history.joeHarvested.plus(what)
-    history.joeHarvestedUSD = history.joeHarvestedUSD.plus(joeHarvestedUSD)
+    history.xVoltSupply = bar.totalSupply
+    history.xVoltBurned = history.xVoltBurned.plus(value)
+    history.xVoltAge = bar.xVoltAge
+    history.xVoltAgeDestroyed = history.xVoltAgeDestroyed.plus(xVoltAgeDestroyed)
+    history.voltHarvested = history.voltHarvested.plus(what)
+    history.voltHarvestedUSD = history.voltHarvestedUSD.plus(voltHarvestedUSD)
     history.ratio = bar.ratio
     history.save()
   }
 
   // If transfer from address to address and not known xJoe pools.
   if (event.params.from != ADDRESS_ZERO && event.params.to != ADDRESS_ZERO) {
-    log.info('transfered {} xJoe from {} to {}', [value.toString(), event.params.from.toHex(), event.params.to.toHex()])
+    log.info('transfered {} xVolt from {} to {}', [value.toString(), event.params.from.toHex(), event.params.to.toHex()])
 
     const fromUser = getUser(event.params.from, event.block)
 
     const fromUserDays = event.block.timestamp.minus(fromUser.updatedAt).divDecimal(BigDecimal.fromString('86400'))
 
     // Recalc xJoe age first
-    fromUser.xJoeAge = fromUser.xJoeAge.plus(fromUserDays.times(fromUser.xJoe))
+    fromUser.xVoltAge = fromUser.xVoltAge.plus(fromUserDays.times(fromUser.xVolt))
     // Calculate xJoeAge being transfered
-    const xJoeAgeTranfered = fromUser.xJoeAge.div(fromUser.xJoe).times(value)
+    const xVoltAgeTranfered = fromUser.xVoltAge.div(fromUser.xVolt).times(value)
     // Subtract from xJoeAge
-    fromUser.xJoeAge = fromUser.xJoeAge.minus(xJoeAgeTranfered)
+    fromUser.xVoltAge = fromUser.xVoltAge.minus(xVoltAgeTranfered)
     fromUser.updatedAt = event.block.timestamp
 
-    fromUser.xJoe = fromUser.xJoe.minus(value)
-    fromUser.xJoeOut = fromUser.xJoeOut.plus(value)
-    fromUser.joeOut = fromUser.joeOut.plus(what)
-    fromUser.usdOut = fromUser.usdOut.plus(what.times(joePrice))
+    fromUser.xVolt = fromUser.xVolt.minus(value)
+    fromUser.xVoltOut = fromUser.xVoltOut.plus(value)
+    fromUser.voltOut = fromUser.voltOut.plus(what)
+    fromUser.usdOut = fromUser.usdOut.plus(what.times(voltPrice))
 
-    if (fromUser.xJoe == BIG_DECIMAL_ZERO) {
+    if (fromUser.xVolt == BIG_DECIMAL_ZERO) {
       log.info('{} left the bar by transfer OUT', [fromUser.id])
-      fromUser.bar = null
+      fromUser.volt = null
     }
 
     fromUser.save()
 
     const toUser = getUser(event.params.to, event.block)
 
-    if (toUser.bar === null) {
+    if (toUser.volt === null) {
       log.info('{} entered the bar by transfer IN', [fromUser.id])
-      toUser.bar = bar.id
+      toUser.volt = bar.id
     }
 
     // Recalculate xJoe age and add incoming xJoeAgeTransfered
     const toUserDays = event.block.timestamp.minus(toUser.updatedAt).divDecimal(BigDecimal.fromString('86400'))
 
-    toUser.xJoeAge = toUser.xJoeAge.plus(toUserDays.times(toUser.xJoe)).plus(xJoeAgeTranfered)
+    toUser.xVoltAge = toUser.xVoltAge.plus(toUserDays.times(toUser.xVolt)).plus(xVoltAgeTranfered)
     toUser.updatedAt = event.block.timestamp
 
-    toUser.xJoe = toUser.xJoe.plus(value)
-    toUser.xJoeIn = toUser.xJoeIn.plus(value)
-    toUser.joeIn = toUser.joeIn.plus(what)
-    toUser.usdIn = toUser.usdIn.plus(what.times(joePrice))
+    toUser.xVolt = toUser.xVolt.plus(value)
+    toUser.xVoltIn = toUser.xVoltIn.plus(value)
+    toUser.voltIn = toUser.voltIn.plus(what)
+    toUser.usdIn = toUser.usdIn.plus(what.times(voltPrice))
 
-    const difference = toUser.xJoeIn.minus(toUser.xJoeOut).minus(toUser.xJoeOffset)
+    const difference = toUser.xVoltIn.minus(toUser.xVoltOut).minus(toUser.xVoltOffset)
 
     // If difference of joe in - joe out - offset > 0, then add on the difference
     // in staked joe based on xJoe:Joe ratio at time of reciept.
     if (difference.gt(BIG_DECIMAL_ZERO)) {
-      const joe = toUser.joeIn.minus(toUser.joeOut).minus(toUser.joeOffset)
+      const volt = toUser.voltIn.minus(toUser.voltOut).minus(toUser.voltOffset)
       const usd = toUser.usdIn.minus(toUser.usdOut).minus(toUser.usdOffset)
 
-      log.info('{} recieved a transfer of {} xJoe from {}, joe value of transfer is {}', [
+      log.info('{} recieved a transfer of {} xVolt from {}, volt value of transfer is {}', [
         toUser.id,
         value.toString(),
         fromUser.id,
         what.toString(),
       ])
 
-      toUser.joeStaked = toUser.joeStaked.plus(joe)
-      toUser.joeStakedUSD = toUser.joeStakedUSD.plus(usd)
+      toUser.voltStaked = toUser.voltStaked.plus(volt)
+      toUser.voltStakedUSD = toUser.voltStakedUSD.plus(usd)
 
-      toUser.xJoeOffset = toUser.xJoeOffset.plus(difference)
-      toUser.joeOffset = toUser.joeOffset.plus(joe)
+      toUser.xVoltOffset = toUser.xVoltOffset.plus(difference)
+      toUser.voltOffset = toUser.voltOffset.plus(volt)
       toUser.usdOffset = toUser.usdOffset.plus(usd)
     }
 
