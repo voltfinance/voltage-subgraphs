@@ -20,11 +20,11 @@ dataSources:
         - User
       abis:
         - name: Bar
-          file: ../../node_modules/@traderjoe-xyz/core/abi/JoeBar.json
+          file: ../../packages/abis/VoltBar.json
         - name: JoeToken
-          file: ../../node_modules/@traderjoe-xyz/core/abi/JoeToken.json
+          file: ../../packages/abis/VoltToken.json
         - name: Pair
-          file: ../../node_modules/@traderjoe-xyz/core/abi/JoePair.json
+          file: ../../packages/abis/VoltPair.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: transfer

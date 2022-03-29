@@ -35,7 +35,7 @@ function createBar(block: ethereum.Block): Bar {
   const bar = new Bar(dataSource.address().toHex())
   bar.decimals = contract.decimals()
   bar.name = contract.name()
-  const barResult = contract.try_joe();
+  const barResult = contract.try_volt();
   if (barResult.reverted) {
     bar.volt = VOLT_TOKEN_ADDRESS;
   } else {
