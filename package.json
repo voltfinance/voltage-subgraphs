@@ -27,5 +27,7 @@
     "prettier": "^2.0.0",
     "typescript": "^4.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@voltage-finance/core": "^1.0.1"
+  }
 }

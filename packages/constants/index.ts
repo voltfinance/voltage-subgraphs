@@ -52,7 +52,7 @@ export const JOE_MAKER_V2_ADDRESS = Address.fromString('0xC98C3C547DDbcc0029F38E
 
 // PRICING
 export const VOLTAGE_WFUSE_USDC_PAIR_ADDRESS = Address.fromString('0xc79983b0754ac688bf54939add59bdf75916fda2')
-export const VOLT_USDC_PAIR_ADDRESS = Address.fromString('0xa01c9a5401fabfefe71cacd7ec70b92cfc180bf8')
+export const VOLT_FUSD_PAIR_ADDRESS = Address.fromString('0x4e6b54f8dee787b16d8cdba4f759342b19239c2c')
 
 export const WFUSE_ADDRESS = Address.fromString('0x0be9e53fd7edac9f859882afdda116645287c629')
 export const USDT_ADDRESS = Address.fromString('0xfadbbf8ce7d5b7041be672561bba99f79c532e10')
