@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: JoeBar
-    network: {{ network }}
+    network: fuse
     source:
-      address: '{{ address }}'
+      address: '0x97a6e78c9208c21afaDa67e7E61d7ad27688eFd1'
       abi: Bar
-      startBlock: {{ startBlock }}
+      startBlock: 15542382
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -22,9 +22,9 @@ dataSources:
         - name: Bar
           file: ../../packages/abis/VoltBar.json
         - name: JoeToken
-          file: ../../packages/abis/VoltToken.json
+          file: ../../packages/abis/VoltageERC20.json
         - name: Pair
-          file: ../../packages/abis/VoltPair.json
+          file: ../../packages/abis/VoltagePair.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: transfer
