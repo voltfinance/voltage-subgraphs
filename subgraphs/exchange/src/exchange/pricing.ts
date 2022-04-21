@@ -4,7 +4,7 @@ import {
   BIG_DECIMAL_ZERO,
   FACTORY_ADDRESS,
   WHITELIST,
-  JOE_USDT_PAIR_ADDRESS,
+  VOLT_FUSD_PAIR_ADDRESS,
   WFUSE_STABLE_PAIRS,
   WFUSE_ADDRESS,
   USDT_ADDRESS,
@@ -30,43 +30,43 @@ export function getJoePrice(block: ethereum.Block = null): BigDecimal {
 }
 
 /*
- * JOE price is the weighted average of JOE/AVAX * AVAX and JOE/USDT.
+ * VOLT price is the weighted average of VOLT/WFUSE * WFUSE and VOLT/USDC.
  *
  */
 export function getWavgJoePrice(block: ethereum.Block = null): BigDecimal {
-  // get JOE/USDT
-  const usdt_pair = Pair.load(JOE_USDT_PAIR_ADDRESS.toString())
-  const usdt_price = usdt_pair
-    ? usdt_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
-      ? usdt_pair.token1Price
-      : usdt_pair.token0Price
+  // get VOLT/USDC
+  const fusdPair = Pair.load(VOLT_FUSD_PAIR_ADDRESS.toString())
+  const fusdPrice = fusdPair
+    ? fusdPair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
+      ? fusdPair.token1Price
+      : fusdPair.token0Price
     : BIG_DECIMAL_ZERO
-  const usdt_weight = usdt_pair
-    ? usdt_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
-      ? usdt_pair.reserve0
-      : usdt_pair.reserve1
+  const fusdWeight = fusdPair
+    ? fusdPair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
+      ? fusdPair.reserve0
+      : fusdPair.reserve1
     : BIG_DECIMAL_ZERO
 
-  // get JOE/AVAX
-  const joe_wavax_address = factoryContract.getPair(VOLT_TOKEN_ADDRESS, WFUSE_ADDRESS)
-  const avax_pair = Pair.load(joe_wavax_address.toString())
-  const avax_rate = avax_pair
-    ? avax_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
-      ? avax_pair.token1Price
-      : avax_pair.token0Price
+  // get VOLT/WFUSE
+  const voltWfuseAddress = factoryContract.getPair(VOLT_TOKEN_ADDRESS, WFUSE_ADDRESS)
+  const wfusePair = Pair.load(voltWfuseAddress.toString())
+  const wfuseRate = wfusePair
+    ? wfusePair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
+      ? wfusePair.token1Price
+      : wfusePair.token0Price
     : BIG_DECIMAL_ZERO
-  const avax_weight = avax_pair
-    ? avax_pair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
-      ? avax_pair.reserve0
-      : avax_pair.reserve1
+  const wfuseWeight = wfusePair
+    ? wfusePair.token0 == VOLT_TOKEN_ADDRESS.toHexString()
+      ? wfusePair.reserve0
+      : wfusePair.reserve1
     : BIG_DECIMAL_ZERO
-  const avax_price = avax_rate.times(getAvaxPrice())
+  const wfusePrice = wfuseRate.times(getAvaxPrice())
 
   // weighted avg
-  const sumprod = usdt_price.times(usdt_weight).plus(avax_price.times(avax_weight))
-  const sumweights = usdt_weight.plus(avax_weight)
-  const wavg = sumprod.div(sumweights)
-  return wavg
+  const sumprod = fusdPrice.times(fusdWeight).plus(wfusePrice.times(wfuseWeight))
+  const sumweights = fusdWeight.plus(wfuseWeight)
+  const weightedAverage = sumprod.div(sumweights)
+  return weightedAverage
 }
 
 /*
