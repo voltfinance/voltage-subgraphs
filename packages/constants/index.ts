@@ -52,7 +52,7 @@ export const JOE_MAKER_V2_ADDRESS = Address.fromString('0xC98C3C547DDbcc0029F38E
 
 // PRICING
 export const VOLTAGE_WFUSE_USDC_PAIR_ADDRESS = Address.fromString('0xc79983b0754ac688bf54939add59bdf75916fda2')
-export const VOLT_USDC_PAIR_ADDRESS = Address.fromString('0xa01c9a5401fabfefe71cacd7ec70b92cfc180bf8')
+export const VOLT_FUSD_PAIR_ADDRESS = Address.fromString('0x4e6b54f8dee787b16d8cdba4f759342b19239c2c')
 
 export const WFUSE_ADDRESS = Address.fromString('0x0be9e53fd7edac9f859882afdda116645287c629')
 export const USDT_ADDRESS = Address.fromString('0xfadbbf8ce7d5b7041be672561bba99f79c532e10')
@@ -65,8 +65,10 @@ export const GB_ADDRESS = Address.fromString('0x90842eb834cfd2a1db0b1512b254a18e
 export const MYAK_ADDRESS = Address.fromString('0xddaaad7366b455aff8e7c82940c43ceb5829b604')
 
 export const WFUSE_STABLE_PAIRS: string[] = [
-    '0x8a81984d2df356b49d182910bbb935897450d7e8', // WFUSE-USDT
-    '0x9f17b1895633e855b8b1c1d0ade9b3b72eb0590c', // WFUSE-USDC
+    '0xca4df49cb6cfcab122b09f2c203820032005385e', // WFUSE-USDT
+    '0xc79983b0754ac688bf54939add59bdf75916fda2', // WFUSE-USDC
+    '0x91520fc2942fd52949514f159aa4927b8850178d', // WFUSE-BUSD
+    '0x933a10d094592eb3f2a26bcb366472eba8868a66', // WFUSE-FUSD
 ]
 
 export const WHITELIST: string[] = [
@@ -75,6 +77,8 @@ export const WHITELIST: string[] = [
     '0x33284f95ccb7b948d9d352e1439561cf83d8d00d', // WBTC
     '0xfadbbf8ce7d5b7041be672561bba99f79c532e10', // USDT
     '0x620fd5fa44be6af63715ef4e65ddfa0387ad13f5', // USDC
+    '0x249be57637d8b013ad64785404b24aebae9b098b', // FUSD
+    '0x34ef2cc892a88415e9f02b91bfa9c91fc0be6bd4', // VOLT
 ]
 
 // LOCKUP -- TO BE DEPRECATED?

@@ -22,7 +22,7 @@ import {
   updatePairHourData,
   updateTokenDayData,
 } from '../enitites'
-import { getAvaxRate, getAvaxPrice } from '../pricing'
+import { getFuseRate, getFusePrice } from '../pricing'
 
 /**
  * Accepts tokens and amounts, return tracked amount based on token whitelist
@@ -320,7 +320,7 @@ export function onSync(event: SyncEvent): void {
   // update AVAX price now that reserves could have changed
   const bundle = getBundle()
   // Pass the block so we can get accurate price data before migration
-  const avaxPrice = getAvaxPrice(event.block)
+  const avaxPrice = getFusePrice(event.block)
   bundle.ethPrice = avaxPrice
   log.info('on sync block: {}, avaxPrice: {}', [event.block.number.toString(), avaxPrice.toString()])
 
@@ -329,8 +329,8 @@ export function onSync(event: SyncEvent): void {
   const token0Address = Address.fromString(token0.id)
   const token1Address = Address.fromString(token1.id)
 
-  token0.derivedETH = getAvaxRate(token0Address)
-  token1.derivedETH = getAvaxRate(token1Address)
+  token0.derivedETH = getFuseRate(token0Address)
+  token1.derivedETH = getFuseRate(token1Address)
   token0.save()
   token1.save()
 

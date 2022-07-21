@@ -7,7 +7,7 @@ import {
   BIG_INT_ZERO,
   FACTORY_ADDRESS,
   VOLT_TOKEN_ADDRESS,
-  VOLT_USDC_PAIR_ADDRESS,
+  VOLT_FUSD_PAIR_ADDRESS,
   VOLTAGE_START_BLOCK,
   VOLTAGE_WFUSE_USDC_PAIR_ADDRESS,
   USDT_ADDRESS,
@@ -48,9 +48,9 @@ export function getUSDRate(token: Address, block: ethereum.Block): BigDecimal {
 
   const reserve1 = reserves.value1.toBigDecimal().times(BIG_DECIMAL_1E18)
 
-  const avaxPriceUSD = reserve1.div(reserve0).div(BIG_DECIMAL_1E6).times(BIG_DECIMAL_1E18)
+  const fusePriceUSD = reserve1.div(reserve0).div(BIG_DECIMAL_1E6).times(BIG_DECIMAL_1E18)
 
-  return avaxPriceUSD.times(tokenPriceWFUSE)
+  return fusePriceUSD.times(tokenPriceWFUSE)
 }
 
 export function getFuseRate(token: Address, block: ethereum.Block): BigDecimal {
@@ -110,7 +110,7 @@ export function getVoltPrice(block: ethereum.Block): BigDecimal {
   //    if (block.number.le(SOME_BLOCK)) {
   //        pair = PairContract.bind(SOME_ADDRESS)
   //    }
-  const pair = PairContract.bind(VOLT_USDC_PAIR_ADDRESS)
+  const pair = PairContract.bind(VOLT_FUSD_PAIR_ADDRESS)
 
   const reservesResult = pair.try_getReserves()
   if (reservesResult.reverted) {
@@ -122,5 +122,5 @@ export function getVoltPrice(block: ethereum.Block): BigDecimal {
     log.error('[getVoltPrice] USDT reserve 0', [])
     return BIG_DECIMAL_ZERO
   }
-  return reserves.value1.toBigDecimal().times(BIG_DECIMAL_1E18).div(reserves.value0.toBigDecimal()).div(BIG_DECIMAL_1E6)
+  return reserves.value0.toBigDecimal().div(reserves.value1.toBigDecimal())
 }

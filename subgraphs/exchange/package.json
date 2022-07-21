@@ -25,7 +25,7 @@
 
         "deploy:avax": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ traderjoe-xyz/exchange exchange.avax.yaml",
         "deploy:rinkeby": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ traderjoe-xyz/exchange-rinkeby-ii exchange.rinkeby.yaml",
-        "deploy:fuse": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ voltfinance/voltage-exchange exchange.fuse.yaml",
+        "deploy:fuse": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ voltfinance/voltage-exchange-v2 exchange.fuse.yaml",
 
         "create-local": "graph create --node http://localhost:8020/ traderjoe-xyz/exchange",
         "remove-local": "graph remove --node http://localhost:8020/ traderjoe-xyz/exchange",
