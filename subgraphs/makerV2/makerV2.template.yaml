@@ -1,14 +1,14 @@
 specVersion: 0.0.2
-description: JoeMakerV2
+description: VoltMakerV2
 schema:
   file: ./makerV2.graphql
 dataSources:
   - kind: ethereum/contract
-    name: JoeMakerV2
+    name: VoltMakerV2
     network: {{ network }}
     source:
       address: '{{ address }}'
-      abi: JoeMakerV2
+      abi: VoltMakerV2
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
@@ -20,10 +20,10 @@ dataSources:
         - Server
         - Serving
       abis:
-        - name: JoeMakerV2
+        - name: VoltMakerV2
           file: ../../packages/abis/VoltMakerV2.json
         - name: Pair
-          file: ../../node_modules/@traderjoe-xyz/core/abi/JoePair.json
+          file: ../../packages/abis/VoltagePair.json
         - name: ERC20
           file: ../../node_modules/@traderjoe-xyz/core/abi/ERC20.json
         - name: Factory

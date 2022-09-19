@@ -3,9 +3,9 @@ type Maker @entity {
   # Maker address
   id: ID!
 
-  # Joe served
-  joeServed: BigDecimal!
-  joeServedUSD: BigDecimal!
+  # Volt served
+  voltServed: BigDecimal!
+  voltServedUSD: BigDecimal!
   totalServings: BigInt!
 
   # Servers
@@ -25,9 +25,9 @@ type Server @entity {
   # Relation to maker
   maker: Maker!
 
-  # Joe served
-  joeServed: BigDecimal!
-  joeServedUSD: BigDecimal!
+  # Volt served
+  voltServed: BigDecimal!
+  voltServedUSD: BigDecimal!
   totalServings: BigInt!
 
   # Servings related to the server
@@ -64,9 +64,9 @@ type Serving @entity {
   # Amount 1
   amount1: BigDecimal!
 
-  # Joe served
-  joeServed: BigDecimal!
-  joeServedUSD: BigDecimal!
+  # Volt served
+  voltServed: BigDecimal!
+  voltServedUSD: BigDecimal!
 
   # Block
   block: BigInt!
@@ -84,9 +84,9 @@ type ServingDayData @entity {
   # Start of day timestamp
   date: Int!
 
-  # Joe served
-  joeServed: BigDecimal!
-  joeServedUSD: BigDecimal!
+  # Volt served
+  voltServed: BigDecimal!
+  voltServedUSD: BigDecimal!
   totalServings: BigInt!
 
   servings: [Serving!] @derivedFrom(field: "dayData")

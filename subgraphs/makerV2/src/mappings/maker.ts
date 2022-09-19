@@ -3,9 +3,9 @@ import { FACTORY_ADDRESS, BIG_DECIMAL_1E18, BIG_INT_ONE } from 'const'
 import { getVoltPrice } from '../../../../packages/pricing'
 import { getMaker, getServer, getServingDayData } from '../entities'
 import { Serving } from '../../generated/schema'
-import { Factory as FactoryContract } from '../../generated/JoeMakerV2/Factory'
-import { ERC20 as ERC20Contract } from '../../generated/JoeMakerV2/ERC20'
-import { LogConvert } from '../../generated/JoeMakerV2/JoeMakerV2'
+import { Factory as FactoryContract } from '../../generated/VoltMakerV2/Factory'
+import { ERC20 as ERC20Contract } from '../../generated/VoltMakerV2/ERC20'
+import { LogConvert } from '../../generated/VoltMakerV2/VoltMakerV2'
 
 export function handleLogConvert(event: LogConvert): void {
   log.info('[JoeMaker] Log Convert {} {} {} {} {} {}', [
@@ -20,8 +20,8 @@ export function handleLogConvert(event: LogConvert): void {
   const maker = getMaker(event.block)
   const server = getServer(event.params.server, event.block)
 
-  const joeAmount = event.params.amountVOLT.toBigDecimal().div(BIG_DECIMAL_1E18)
-  const joeAmountUSD = joeAmount.times(getVoltPrice(event.block))
+  const voltAmount = event.params.amountVOLT.toBigDecimal().div(BIG_DECIMAL_1E18)
+  const voltAmountUSD = voltAmount.times(getVoltPrice(event.block))
 
   const token0Contract = ERC20Contract.bind(event.params.token0)
   const token0SymbolResult = token0Contract.try_symbol()
@@ -50,28 +50,28 @@ export function handleLogConvert(event: LogConvert): void {
   serving.token1Symbol = token1Symbol
   serving.amount0 = event.params.amount0.toBigDecimal().div(BigInt.fromI32(token0Decimals).toBigDecimal())
   serving.amount1 = event.params.amount1.toBigDecimal().div(BigInt.fromI32(token1Decimals).toBigDecimal())
-  serving.joeServed = joeAmount
-  serving.joeServedUSD = joeAmountUSD
+  serving.voltServed = voltAmount
+  serving.voltServedUSD = voltAmountUSD
   serving.block = event.block.number
   serving.timestamp = event.block.timestamp
   serving.save()
 
   const servingDayData = getServingDayData(event)
-  servingDayData.joeServed = servingDayData.joeServed.plus(joeAmount)
-  servingDayData.joeServedUSD = servingDayData.joeServedUSD.plus(joeAmountUSD)
+  servingDayData.voltServed = servingDayData.voltServed.plus(voltAmount)
+  servingDayData.voltServedUSD = servingDayData.voltServedUSD.plus(voltAmountUSD)
   servingDayData.totalServings = servingDayData.totalServings.plus(BIG_INT_ONE)
   servingDayData.save()
 
   serving.dayData = servingDayData.id
   serving.save()
 
-  maker.joeServed = maker.joeServed.plus(joeAmount)
-  maker.joeServedUSD = maker.joeServedUSD.plus(joeAmountUSD)
+  maker.voltServed = maker.voltServed.plus(voltAmount)
+  maker.voltServedUSD = maker.voltServedUSD.plus(voltAmountUSD)
   maker.totalServings = maker.totalServings.plus(BIG_INT_ONE)
   maker.save()
 
-  server.joeServed = server.joeServed.plus(joeAmount)
-  server.joeServedUSD = server.joeServedUSD.plus(joeAmountUSD)
+  server.voltServed = server.voltServed.plus(voltAmount)
+  server.voltServedUSD = server.voltServedUSD.plus(voltAmountUSD)
   server.totalServings = server.totalServings.plus(BIG_INT_ONE)
   server.save()
 }

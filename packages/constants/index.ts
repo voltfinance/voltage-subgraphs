@@ -47,8 +47,8 @@ export const MASTER_CHEF_START_BLOCK = BigInt.fromI32(15887352)
 export const VOLT_BAR_ADDRESS = Address.fromString('0x97a6e78c9208c21afaDa67e7E61d7ad27688eFd1')
 
 // MAKER
-export const JOE_MAKER_ADDRESS = Address.fromString('0x861726bfe27931a4e22a7277bde6cb8432b65856')
-export const JOE_MAKER_V2_ADDRESS = Address.fromString('0xC98C3C547DDbcc0029F38E0383C645C202aD663d')
+// export const JOE_MAKER_ADDRESS = Address.fromString('0x861726bfe27931a4e22a7277bde6cb8432b65856')
+export const VOLT_MAKER_V2_ADDRESS = Address.fromString('0x0b72125d6c42Fb7a1ec2763500a8d8b758b0F3ef')
 
 // PRICING
 export const VOLTAGE_WFUSE_USDC_PAIR_ADDRESS = Address.fromString('0xc79983b0754ac688bf54939add59bdf75916fda2')

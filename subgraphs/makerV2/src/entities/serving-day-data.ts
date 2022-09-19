@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from 'const'
-import { LogConvert } from '../../generated/JoeMakerV2/JoeMakerV2'
+import { LogConvert } from '../../generated/VoltMakerV2/VoltMakerV2'
 import { ServingDayData } from '../../generated/schema'
 
 export function getServingDayData(event: LogConvert): ServingDayData {
@@ -13,8 +13,8 @@ export function getServingDayData(event: LogConvert): ServingDayData {
   if (servingDayData === null) {
     servingDayData = new ServingDayData(id)
     servingDayData.date = day * SECONDS_PER_DAY
-    servingDayData.joeServed = BIG_DECIMAL_ZERO
-    servingDayData.joeServedUSD = BIG_DECIMAL_ZERO
+    servingDayData.voltServed = BIG_DECIMAL_ZERO
+    servingDayData.voltServedUSD = BIG_DECIMAL_ZERO
     servingDayData.totalServings = BIG_INT_ZERO
   }
 

@@ -11,8 +11,8 @@ export function getServer(address: Address, block: ethereum.Block): Server {
   if (server === null) {
     server = new Server(address.toHex())
     server.maker = maker.id
-    server.joeServed = BIG_DECIMAL_ZERO
-    server.joeServedUSD = BIG_DECIMAL_ZERO
+    server.voltServed = BIG_DECIMAL_ZERO
+    server.voltServedUSD = BIG_DECIMAL_ZERO
     server.totalServings = BIG_INT_ZERO
   }
 
