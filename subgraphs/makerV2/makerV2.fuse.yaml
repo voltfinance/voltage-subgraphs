@@ -5,11 +5,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: JoeMakerV2
-    network: {{ network }}
+    network: fuse
     source:
-      address: '{{ address }}'
+      address: '0x0b72125d6c42Fb7a1ec2763500a8d8b758b0F3ef'
       abi: JoeMakerV2
-      startBlock: {{ startBlock }}
+      startBlock: 15994910
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

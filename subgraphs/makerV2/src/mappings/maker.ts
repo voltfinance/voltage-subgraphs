@@ -1,11 +1,11 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { FACTORY_ADDRESS, BIG_DECIMAL_1E18, BIG_INT_ONE } from 'const'
-import { getJoePrice } from '../../../../packages/pricing'
+import { getVoltPrice } from '../../../../packages/pricing'
 import { getMaker, getServer, getServingDayData } from '../entities'
 import { Serving } from '../../generated/schema'
 import { Factory as FactoryContract } from '../../generated/JoeMakerV2/Factory'
 import { ERC20 as ERC20Contract } from '../../generated/JoeMakerV2/ERC20'
-import { LogConvert } from '../../generated/JoeMakerV2/JoeMaker'
+import { LogConvert } from '../../generated/JoeMakerV2/JoeMakerV2'
 
 export function handleLogConvert(event: LogConvert): void {
   log.info('[JoeMaker] Log Convert {} {} {} {} {} {}', [
@@ -14,14 +14,14 @@ export function handleLogConvert(event: LogConvert): void {
     event.params.token1.toHex(),
     event.params.amount0.toString(),
     event.params.amount1.toString(),
-    event.params.amountJOE.toString(),
+    event.params.amountVOLT.toString(),
   ])
 
   const maker = getMaker(event.block)
   const server = getServer(event.params.server, event.block)
 
-  const joeAmount = event.params.amountJOE.toBigDecimal().div(BIG_DECIMAL_1E18)
-  const joeAmountUSD = joeAmount.times(getJoePrice(event.block))
+  const joeAmount = event.params.amountVOLT.toBigDecimal().div(BIG_DECIMAL_1E18)
+  const joeAmountUSD = joeAmount.times(getVoltPrice(event.block))
 
   const token0Contract = ERC20Contract.bind(event.params.token0)
   const token0SymbolResult = token0Contract.try_symbol()

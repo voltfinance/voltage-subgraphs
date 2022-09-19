@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from 'const'
-import { LogConvert } from '../../generated/JoeMakerV2/JoeMaker'
+import { LogConvert } from '../../generated/JoeMakerV2/JoeMakerV2'
 import { ServingDayData } from '../../generated/schema'
 
 export function getServingDayData(event: LogConvert): ServingDayData {
