@@ -62,8 +62,8 @@ function createBar(block: ethereum.Block): Bar {
   return bar as Bar
 }
 
-function createVoltBalanceHistory(block: ethereum.Block): VoltBalanceHistory {
-  const vbh = new VoltBalanceHistory(block.number.toString())
+function createVoltBalanceHistory(day: string): VoltBalanceHistory {
+  const vbh = new VoltBalanceHistory(day)
   vbh.balance = BIG_DECIMAL_ZERO
   vbh.balanceUSD = BIG_DECIMAL_ZERO
   vbh.totalVoltStaked = BIG_DECIMAL_ZERO
@@ -83,10 +83,13 @@ function getBar(block: ethereum.Block): Bar {
 }
 
 function getVoltBalanceHistory(block: ethereum.Block): VoltBalanceHistory {
-  let vbh = VoltBalanceHistory.load(block.number.toString())
+  const day = block.timestamp.toI32() / 86400
+  const id = BigInt.fromI32(day).toString()
+
+  let vbh = VoltBalanceHistory.load(id)
 
   if (vbh === null) {
-    vbh = createVoltBalanceHistory(block)
+    vbh = createVoltBalanceHistory(id)
   }
 
   return vbh as VoltBalanceHistory
