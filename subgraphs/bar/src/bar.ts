@@ -6,24 +6,26 @@ import {
   BIG_INT_ZERO,
   VOLT_BAR_ADDRESS,
   VOLT_TOKEN_ADDRESS,
-  VOLT_USDC_PAIR_ADDRESS,
+  VOLT_FUSD_PAIR_ADDRESS,
+  VOLTAGE_START_BLOCK,
+  BIG_DECIMAL_ONE,
 } from 'const'
 import { Address, BigDecimal, BigInt, dataSource, ethereum, log } from '@graphprotocol/graph-ts'
-import { Bar, History, User } from '../generated/schema'
+import { Bar, History, User, VoltBalanceHistory } from '../generated/schema'
 import { Bar as BarContract, Transfer as TransferEvent } from '../generated/JoeBar/Bar'
 import { Pair as PairContract } from '../generated/JoeBar/Pair'
 import { JoeToken as JoeTokenContract } from '../generated/JoeBar/JoeToken'
 
 // TODO: Get averages of multiple joe stablecoin pairs
 function getVoltPrice(): BigDecimal {
-  const pair = PairContract.bind(VOLT_USDC_PAIR_ADDRESS)
+  const pair = PairContract.bind(VOLT_FUSD_PAIR_ADDRESS)
   const reservesResult = pair.try_getReserves()
   if (reservesResult.reverted) {
     log.info('[getJoePrice] getReserves reverted', [])
     return BIG_DECIMAL_ZERO
   }
   const reserves = reservesResult.value
-  if (reserves.value0.toBigDecimal().equals(BigDecimal.fromString("0"))) {
+  if (reserves.value0.toBigDecimal().equals(BigDecimal.fromString('0'))) {
     log.error('[getJoePrice] USDC reserve 0', [])
     return BIG_DECIMAL_ZERO
   }
@@ -35,11 +37,11 @@ function createBar(block: ethereum.Block): Bar {
   const bar = new Bar(dataSource.address().toHex())
   bar.decimals = contract.decimals()
   bar.name = contract.name()
-  const barResult = contract.try_volt();
+  const barResult = contract.try_volt()
   if (barResult.reverted) {
-    bar.volt = VOLT_TOKEN_ADDRESS;
+    bar.volt = VOLT_TOKEN_ADDRESS
   } else {
-    bar.volt = barResult.value;
+    bar.volt = barResult.value
   }
   bar.symbol = contract.symbol()
   bar.totalSupply = BIG_DECIMAL_ZERO
@@ -53,19 +55,41 @@ function createBar(block: ethereum.Block): Bar {
   bar.xVoltAgeDestroyed = BIG_DECIMAL_ZERO
   bar.ratio = BIG_DECIMAL_ZERO
   bar.updatedAt = block.timestamp
+  bar.voltEntered = BIG_DECIMAL_ZERO
+  bar.voltExited = BIG_DECIMAL_ZERO
   bar.save()
 
   return bar as Bar
 }
 
+function createVoltBalanceHistory(block: ethereum.Block): VoltBalanceHistory {
+  const vbh = new VoltBalanceHistory(block.number.toString())
+  vbh.balance = BIG_DECIMAL_ZERO
+  vbh.balanceUSD = BIG_DECIMAL_ZERO
+  vbh.totalVoltStaked = BIG_DECIMAL_ZERO
+  vbh.save()
+
+  return vbh as VoltBalanceHistory
+}
+
 function getBar(block: ethereum.Block): Bar {
-  let bar = Bar.load(dataSource.address().toHex())
+  let bar = Bar.load(VOLT_BAR_ADDRESS.toHex())
 
   if (bar === null) {
     bar = createBar(block)
   }
 
   return bar as Bar
+}
+
+function getVoltBalanceHistory(block: ethereum.Block): VoltBalanceHistory {
+  let vbh = VoltBalanceHistory.load(block.number.toString())
+
+  if (vbh === null) {
+    vbh = createVoltBalanceHistory(block)
+  }
+
+  return vbh as VoltBalanceHistory
 }
 
 function createUser(address: Address, block: ethereum.Block): User {
@@ -210,6 +234,7 @@ export function transfer(event: TransferEvent): void {
     bar.voltStaked = bar.voltStaked.plus(what)
     bar.voltStakedUSD = bar.voltStakedUSD.plus(voltStakedUSD)
     bar.updatedAt = event.block.timestamp
+    bar.voltEntered = bar.voltEntered.plus(what)
 
     const history = getHistory(event.block)
     history.xVoltAge = bar.xVoltAge
@@ -267,6 +292,7 @@ export function transfer(event: TransferEvent): void {
     bar.voltHarvested = bar.voltHarvested.plus(what)
     bar.voltHarvestedUSD = bar.voltHarvestedUSD.plus(voltHarvestedUSD)
     bar.updatedAt = event.block.timestamp
+    bar.voltExited = bar.voltExited.plus(what)
 
     const history = getHistory(event.block)
     history.xVoltSupply = bar.totalSupply
@@ -281,7 +307,11 @@ export function transfer(event: TransferEvent): void {
 
   // If transfer from address to address and not known xJoe pools.
   if (event.params.from != ADDRESS_ZERO && event.params.to != ADDRESS_ZERO) {
-    log.info('transfered {} xVolt from {} to {}', [value.toString(), event.params.from.toHex(), event.params.to.toHex()])
+    log.info('transfered {} xVolt from {} to {}', [
+      value.toString(),
+      event.params.from.toHex(),
+      event.params.to.toHex(),
+    ])
 
     const fromUser = getUser(event.params.from, event.block)
 
@@ -352,4 +382,24 @@ export function transfer(event: TransferEvent): void {
   }
 
   bar.save()
+}
+
+export function voltTransfer(event: TransferEvent): void {
+  if (event.params.from != VOLT_BAR_ADDRESS && event.params.to != VOLT_BAR_ADDRESS) {
+    log.warning('Ignoring tx unrelated to xVOLT Tx: {}', [
+      event.transaction.hash.toHex(),
+    ])
+    return
+  }
+
+  const voltPrice = getVoltPrice()
+  const vbh = getVoltBalanceHistory(event.block)
+  const voltToken = JoeTokenContract.bind(VOLT_TOKEN_ADDRESS)
+  const bar = getBar(event.block)
+
+  vbh.balance = voltToken.balanceOf(VOLT_BAR_ADDRESS).divDecimal(BIG_DECIMAL_1E18)
+  vbh.balanceUSD = vbh.balance.times(voltPrice).div(BIG_DECIMAL_1E18)
+  vbh.totalVoltStaked = bar.voltEntered.minus(bar.voltExited)
+
+  vbh.save()
 }
