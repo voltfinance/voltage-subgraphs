@@ -57,6 +57,7 @@ function createBar(block: ethereum.Block): Bar {
   bar.updatedAt = block.timestamp
   bar.voltEntered = BIG_DECIMAL_ZERO
   bar.voltExited = BIG_DECIMAL_ZERO
+  bar.usersCnt = 0
   bar.save()
 
   return bar as Bar
@@ -208,6 +209,7 @@ export function transfer(event: TransferEvent): void {
     if (user.xVolt == BIG_DECIMAL_ZERO) {
       log.info('{} entered the bar', [user.id])
       user.volt = bar.id
+      bar.usersCnt = bar.usersCnt + 1
     }
 
     user.xVoltMinted = user.xVoltMinted.plus(value)
@@ -281,6 +283,7 @@ export function transfer(event: TransferEvent): void {
     if (user.xVolt == BIG_DECIMAL_ZERO) {
       log.info('{} left the bar', [user.id])
       user.volt = null
+      bar.usersCnt = bar.usersCnt - 1
     }
 
     user.updatedAt = event.block.timestamp
@@ -336,6 +339,7 @@ export function transfer(event: TransferEvent): void {
     if (fromUser.xVolt == BIG_DECIMAL_ZERO) {
       log.info('{} left the bar by transfer OUT', [fromUser.id])
       fromUser.volt = null
+      bar.usersCnt = bar.usersCnt - 1
     }
 
     fromUser.save()
@@ -345,6 +349,7 @@ export function transfer(event: TransferEvent): void {
     if (toUser.volt === null) {
       log.info('{} entered the bar by transfer IN', [fromUser.id])
       toUser.volt = bar.id
+      bar.usersCnt = bar.usersCnt + 1
     }
 
     // Recalculate xJoe age and add incoming xJoeAgeTransfered

@@ -48,6 +48,9 @@ type Bar @entity {
   # Users in the bar
   users: [User!]! @derivedFrom(field: "volt")
 
+  # Active user count in the bar
+  usersCnt: Int!
+
   # Updated at
   updatedAt: BigInt!
 
