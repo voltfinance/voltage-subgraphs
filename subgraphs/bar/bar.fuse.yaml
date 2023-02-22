@@ -29,3 +29,26 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: transfer
       file: ./src/bar.ts
+  - kind: ethereum/contract
+    name: JoeToken
+    network: fuse
+    source:
+      address: '0x34Ef2Cc892a88415e9f02b91BfA9c91fC0bE6bD4'
+      abi: JoeToken
+      startBlock: 15542382
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - VoltBalanceHistory
+        - Bar
+      abis:
+        - name: JoeToken
+          file: ../../packages/abis/VoltageERC20.json
+        - name: Pair
+          file: ../../packages/abis/VoltagePair.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: voltTransfer
+      file: ./src/bar.ts

@@ -48,8 +48,17 @@ type Bar @entity {
   # Users in the bar
   users: [User!]! @derivedFrom(field: "volt")
 
+  # Active user count in the bar
+  usersCnt: Int!
+
   # Updated at
   updatedAt: BigInt!
+
+  # volt amounts transferred through enter() call
+  voltEntered: BigDecimal!
+
+  # volt amounts transferred through exit
+  voltExited: BigDecimal!
 }
 
 # User
@@ -139,4 +148,11 @@ type History @entity {
   xVoltBurned: BigDecimal!
   xVoltSupply: BigDecimal!
   ratio: BigDecimal!
+}
+
+type VoltBalanceHistory @entity {
+  id: ID!
+  balance: BigDecimal!
+  balanceUSD: BigDecimal!
+  totalVoltStaked: BigDecimal!
 }
