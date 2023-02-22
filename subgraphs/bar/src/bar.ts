@@ -1,7 +1,6 @@
 import {
   ADDRESS_ZERO,
   BIG_DECIMAL_1E18,
-  BIG_DECIMAL_1E6,
   BIG_DECIMAL_ZERO,
   BIG_INT_ZERO,
   VOLT_BAR_ADDRESS,
@@ -29,7 +28,7 @@ function getVoltPrice(): BigDecimal {
     log.error('[getJoePrice] USDC reserve 0', [])
     return BIG_DECIMAL_ZERO
   }
-  return reserves.value1.toBigDecimal().times(BIG_DECIMAL_1E18).div(reserves.value0.toBigDecimal()).div(BIG_DECIMAL_1E6)
+  return reserves.value1.toBigDecimal().times(BIG_DECIMAL_1E18).div(reserves.value0.toBigDecimal()).div(BIG_DECIMAL_1E18)
 }
 
 function createBar(block: ethereum.Block): Bar {
