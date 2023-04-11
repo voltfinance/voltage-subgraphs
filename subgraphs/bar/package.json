@@ -18,7 +18,7 @@
     "build:fuse": "graph build bar.fuse.yaml",
     "deploy:avax": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ traderjoe-xyz/bar bar.avax.yaml",
     "deploy:rinkeby": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ traderjoe-xyz/bar-rinkeby-ii bar.rinkeby.yaml",
-    "deploy:fuse": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ t0mcr8se/voltbar bar.fuse.yaml",
+    "deploy:fuse": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ voltfinance/volt-bar bar.fuse.yaml",
     "create-local": "graph create --node http://localhost:8020/ volt/bar",
     "remove-local": "graph remove --node http://localhost:8020/ volt/bar",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 volt/bar bar.fuse.yaml"
