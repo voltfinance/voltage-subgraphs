@@ -63,6 +63,8 @@ typings/
 .idea
 .vscode
 .DS_Store
+.yarn
+.yarnrc.yml
 
 build/
 generated/

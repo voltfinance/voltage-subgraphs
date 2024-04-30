@@ -1,0 +1,14 @@
+{
+  "name": "masterchef-v4",
+  "license": "MIT",
+  "version": "1.0.0",
+  "author": "mul53",
+  "scripts": {
+    "codegen:fuse": "graph codegen masterchefV4.fuse.yaml",
+    "build:fuse": "graph build masterchefV4.fuse.yaml",
+    "deploy:fuse": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ voltfinance/masterchef-v4 masterchefV4.fuse.yaml"
+  },
+  "dependencies": {
+    "@traderjoe-xyz/core": "^2.0.0"
+  }
+}

@@ -7,9 +7,9 @@ dataSources:
     name: VoltMakerV2
     network: fuse
     source:
-      address: '0x0b72125d6c42Fb7a1ec2763500a8d8b758b0F3ef'
+      address: '0xAC65feb1A13082995395dF19FfCD7f59A2EB5D65'
       abi: VoltMakerV2
-      startBlock: 15994910
+      startBlock: 24084917
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

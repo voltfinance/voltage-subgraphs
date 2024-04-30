@@ -32,7 +32,7 @@ export const LOCKUP_POOL_NUMBER = BigInt.fromI32(29)
 export const NULL_CALL_RESULT_VALUE = '0x0000000000000000000000000000000000000000000000000000000000000001'
 
 // EXCHANGE
-export const FACTORY_ADDRESS = Address.fromString('0x1998E4b0F1F922367d8Ec20600ea2b86df55f34E')
+export const FACTORY_ADDRESS = Address.fromString('0x1998e4b0f1f922367d8ec20600ea2b86df55f34e')
 export const VOLTAGE_START_BLOCK = BigInt.fromI32(15644529)
 
 export const VOLT_TOKEN_ADDRESS = Address.fromString('0x34Ef2Cc892a88415e9f02b91BfA9c91fC0bE6bD4')
@@ -65,10 +65,8 @@ export const GB_ADDRESS = Address.fromString('0x90842eb834cfd2a1db0b1512b254a18e
 export const MYAK_ADDRESS = Address.fromString('0xddaaad7366b455aff8e7c82940c43ceb5829b604')
 
 export const WFUSE_STABLE_PAIRS: string[] = [
-    '0xca4df49cb6cfcab122b09f2c203820032005385e', // WFUSE-USDT
-    '0xc79983b0754ac688bf54939add59bdf75916fda2', // WFUSE-USDC
-    '0x91520fc2942fd52949514f159aa4927b8850178d', // WFUSE-BUSD
-    '0x933a10d094592eb3f2a26bcb366472eba8868a66', // WFUSE-FUSD
+    '0x0cdd2d9b8ddfd748b3e52b8e1decb8d3fb86ecb3', // WFUSE-USDC
+    '0x0b31d85a35a06bfddd53f3da0cd23cbb33442778' // WFUSE-USDT
 ]
 
 export const WHITELIST: string[] = [
@@ -79,6 +77,11 @@ export const WHITELIST: string[] = [
     '0x620fd5fa44be6af63715ef4e65ddfa0387ad13f5', // USDC
     '0x249be57637d8b013ad64785404b24aebae9b098b', // FUSD
     '0x34ef2cc892a88415e9f02b91bfa9c91fc0be6bd4', // VOLT
+    '0xce86a1cf3cff48139598de6bf9b1df2e0f79f86f', // fUSDV3
+    '0x28c3d1cd466ba22f6cae51b1a4692a831696391a', // USDC V2
+    '0x68c9736781e9316ebf5c3d49fe0c1f45d2d104cd', // USDT V2
+    '0x34ef2cc892a88415e9f02b91bfa9c91fc0be6bd4', // VOLT
+    '0x4e69ae0cd024754655b4ef74f24a8dcb39ba07e8', // CEUS
 ]
 
 // LOCKUP -- TO BE DEPRECATED?
@@ -88,7 +91,7 @@ export const LOCKUP_BLOCK_NUMBER = BigInt.fromI32(10959148)
 export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString('0')
 
 // minimum liquidity for price to get tracked
-export const MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString('20000')
+export const MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString('10000')
 
 // MasterChefV2 precision
 export const ACC_VOLT_PRECISION = BigInt.fromString('1000000000000')

@@ -42,25 +42,25 @@ export function getTrackedVolumeUSD(
   const price1 = token1.derivedETH.times(bundle.ethPrice)
 
   // if less than 5 LPs, require high minimum reserve amount amount or return 0
-  if (pair.liquidityProviderCount.lt(BigInt.fromI32(5))) {
-    const reserve0USD = pair.reserve0.times(price0)
-    const reserve1USD = pair.reserve1.times(price1)
-    if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
-      if (reserve0USD.plus(reserve1USD).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-        return BIG_DECIMAL_ZERO
-      }
-    }
-    if (WHITELIST.includes(token0.id) && !WHITELIST.includes(token1.id)) {
-      if (reserve0USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-        return BIG_DECIMAL_ZERO
-      }
-    }
-    if (!WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
-      if (reserve1USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-        return BIG_DECIMAL_ZERO
-      }
-    }
-  }
+  // if (pair.liquidityProviderCount.lt(BigInt.fromI32(5))) {
+  //   const reserve0USD = pair.reserve0.times(price0)
+  //   const reserve1USD = pair.reserve1.times(price1)
+  //   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  //     if (reserve0USD.plus(reserve1USD).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
+  //       return BIG_DECIMAL_ZERO
+  //     }
+  //   }
+  //   if (WHITELIST.includes(token0.id) && !WHITELIST.includes(token1.id)) {
+  //     if (reserve0USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
+  //       return BIG_DECIMAL_ZERO
+  //     }
+  //   }
+  //   if (!WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  //     if (reserve1USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
+  //       return BIG_DECIMAL_ZERO
+  //     }
+  //   }
+  // }
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {

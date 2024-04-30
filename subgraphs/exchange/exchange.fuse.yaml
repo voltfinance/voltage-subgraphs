@@ -1,6 +1,11 @@
 specVersion: 0.0.3
+features:
+  - grafting
 description: Exchange
 repository: https://github.com/traderjoe-xyz/joe-subgraph
+graft:
+  base: QmTaCjCaVHpJxrhowpf1SCFVJEdjBUtRvDkh1JiLTpzCmn
+  block: 27198500
 schema:
   file: ./exchange.graphql
 dataSources:
